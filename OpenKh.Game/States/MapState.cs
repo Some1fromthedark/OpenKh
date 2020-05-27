@@ -369,7 +369,7 @@ namespace OpenKh.Game.States
 
             if (_input.IsCross)
             {
-                _objEntryId = _debugObjentryCursor;
+                _objEntryId = _kernel.ObjEntries.Skip(_debugObjentryCursor).FirstOrDefault()?.ObjectId ?? 0;
 
                 BasicallyForceToReloadEverything();
                 DisableDebugMode();
