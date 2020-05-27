@@ -24,6 +24,7 @@ namespace OpenKh.Game.States
         private int _placeId = 4;
         private int _objEntryId = 0x236; // PLAYER
         private bool _enableCameraMovement = true;
+        private double _absTime = 0;
 
         public void Initialize(StateInitDesc initDesc)
         {
@@ -80,6 +81,7 @@ namespace OpenKh.Game.States
             };
             _effect.GraphicsDevice.DepthStencilState = new DepthStencilState();
 
+            _absTime += deltaTimes.DeltaTime;
 
             foreach (var pass in _effect.CurrentTechnique.Passes)
             {
@@ -87,6 +89,8 @@ namespace OpenKh.Game.States
 
                 foreach (var mesh in _models)
                 {
+                    var segments = mesh?.GetSegmentsByTime(_absTime);
+
                     var index = 0;
                     foreach (var part in mesh.Parts)
                     {
@@ -107,14 +111,14 @@ namespace OpenKh.Game.States
 
                         _graphics.GraphicsDevice.DrawUserIndexedPrimitives(
                             PrimitiveType.TriangleList,
-                            mesh.Segments[index].Vertices,
+                            segments[index].Vertices,
                             0,
-                            mesh.Segments[index].Vertices.Length,
+                            segments[index].Vertices.Length,
                             part.Indices,
                             0,
                             part.Indices.Length / 3);
 
-                        index = (index + 1) % mesh.Segments.Length;
+                        index = (index + 1) % segments.Length;
                     }
                 }
             }
@@ -196,22 +200,23 @@ namespace OpenKh.Game.States
 
             return new Mesh
             {
-                Segments = model.Segments.Select(segment => new Mesh.Segment
-                {
-                    Vertices = segment.Vertices.Select(vertex => new VertexPositionColorTexture
-                    {
-                        Position = new Vector3(vertex.X, vertex.Y, vertex.Z),
-                        TextureCoordinate = new Vector2(vertex.U, vertex.V),
-                        Color = new Color((vertex.Color >> 16) & 0xff, (vertex.Color >> 8) & 0xff, vertex.Color & 0xff, (vertex.Color >> 24) & 0xff)
-                    }).ToArray()
-                }).ToArray(),
                 Parts = model.Parts.Select(part => new Mesh.Part
                 {
                     Indices = part.Indices,
                     SegmentId = part.SegmentIndex,
                     TextureId = part.TextureIndex
                 }).ToArray(),
-                Textures = textures?.Images?.Select(texture => texture.CreateTexture(graphics)).ToArray() ?? new Texture2D[0]
+                Textures = textures?.Images?.Select(texture => texture.CreateTexture(graphics)).ToArray() ?? new Texture2D[0],
+                GetSegmentsByTime = (absTime) => model.GetSegmentsByTime(absTime).Select(
+                    segment => new Mesh.Segment
+                    {
+                        Vertices = segment.Vertices.Select(vertex => new VertexPositionColorTexture
+                        {
+                            Position = new Vector3(vertex.X, vertex.Y, vertex.Z),
+                            TextureCoordinate = new Vector2(vertex.U, vertex.V),
+                            Color = new Color((vertex.Color >> 16) & 0xff, (vertex.Color >> 8) & 0xff, vertex.Color & 0xff, (vertex.Color >> 24) & 0xff)
+                        }).ToArray()
+                    }).ToArray(),
             };
         }
 

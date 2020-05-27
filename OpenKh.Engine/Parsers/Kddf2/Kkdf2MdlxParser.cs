@@ -10,14 +10,6 @@ namespace OpenKh.Engine.Parsers.Kddf2
 {
     public class Kkdf2MdlxParser
     {
-        public class CI
-        {
-            public int[] Indices;
-            public int TextureIndex, SegmentIndex;
-        }
-
-        public List<CI> MeshDescriptors { get; } = new List<CI>();
-
         private readonly List<ImmutableMesh> immultableMeshList;
 
         /// <summary>

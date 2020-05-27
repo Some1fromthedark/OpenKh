@@ -1,4 +1,6 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
+using OpenKh.Game.Infrastructure;
+using System;
 
 namespace OpenKh.Game.Models
 {
@@ -16,8 +18,9 @@ namespace OpenKh.Game.Models
             public int SegmentId { get; set; }
         }
 
-        public Segment[] Segments { get; set; }
         public Part[] Parts { get; set; }
         public Texture2D[] Textures { get; set; }
+
+        public Func<double, Segment[]> GetSegmentsByTime;
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Runtime.InteropServices;
+﻿using System;
+using System.Runtime.InteropServices;
 
 namespace OpenKh.Engine.Parsers
 {
@@ -24,7 +25,8 @@ namespace OpenKh.Engine.Parsers
             public int SegmentIndex { get; set; }
         }
 
-        public Segment[] Segments { get; set; }
         public Part[] Parts { get; set; }
+
+        public Func<double, Segment[]> GetSegmentsByTime;
     }
 }
