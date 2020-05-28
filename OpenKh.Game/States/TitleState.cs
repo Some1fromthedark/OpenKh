@@ -151,6 +151,7 @@ namespace OpenKh.Game.States
                 _archiveManager.LoadArchive($"menu/{_kernel.Region}/titlejf.2ld");
             _archiveManager.LoadArchive($"menu/{_kernel.Region}/title.2ld");
             _archiveManager.LoadArchive($"menu/{_kernel.Region}/save.2ld");
+            _archiveManager.LoadArchive($"menu/{_kernel.Region}/title_kddf2_test.2ld");
 
             _isTheaterModeUnlocked = false;
             if (_kernel.IsReMix)
