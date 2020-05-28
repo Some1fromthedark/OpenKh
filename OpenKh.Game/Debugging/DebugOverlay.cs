@@ -1,5 +1,5 @@
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
+using OpenKh.Engine.Extensions;
 using OpenKh.Engine.Renders;
 using OpenKh.Game.Infrastructure;
 using OpenKh.Game.Shaders;
