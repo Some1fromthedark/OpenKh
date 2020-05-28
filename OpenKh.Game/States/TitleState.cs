@@ -1,7 +1,9 @@
 using OpenKh.Engine;
 using OpenKh.Engine.Renderers;
+using OpenKh.Engine.Renders;
 using OpenKh.Game.Debugging;
 using OpenKh.Game.Infrastructure;
+using OpenKh.Game.Shaders;
 using OpenKh.Kh2;
 using System;
 using System.Collections.Generic;
@@ -110,11 +112,12 @@ namespace OpenKh.Game.States
         private ArchiveManager _archiveManager;
         private InputManager _inputManager;
         private IStateChange _stateChange;
-        private MonoDrawing drawing;
+        private KingdomShader _shader;
+        private MonoSpriteDrawing drawing;
         private LayoutRenderer layoutRendererFg;
         private LayoutRenderer layoutRendererBg;
         private LayoutRenderer layoutRendererTheater;
-        private Dictionary<string, IEnumerable<ISurface>> cachedSurfaces;
+        private Dictionary<string, IEnumerable<ISpriteTexture>> cachedSurfaces;
 
         private TitleLayout _titleLayout;
         private bool _isTheaterModeUnlocked;
@@ -141,8 +144,11 @@ namespace OpenKh.Game.States
             _inputManager = initDesc.InputManager;
             _stateChange = initDesc.StateChange;
 
-            drawing = new MonoDrawing(initDesc.GraphicsDevice.GraphicsDevice, initDesc.ContentManager);
-            cachedSurfaces = new Dictionary<string, IEnumerable<ISurface>>();
+            _shader = new KingdomShader(initDesc.ContentManager);
+            drawing = new MonoSpriteDrawing(initDesc.GraphicsDevice.GraphicsDevice, _shader);
+            drawing.SetViewport(0, 512, 0, 416);
+
+            cachedSurfaces = new Dictionary<string, IEnumerable<ISpriteTexture>>();
 
             if (_kernel.IsReMix)
                 _archiveManager.LoadArchive($"menu/{_kernel.Region}/titlejf.2ld");
@@ -385,7 +391,7 @@ namespace OpenKh.Game.States
             var layout = _archiveManager.Get<Layout>(layoutResourceName);
             if (!cachedSurfaces.TryGetValue(imagesResourceName, out var images))
                 images = cachedSurfaces[imagesResourceName] = _archiveManager.Get<Imgz>(imagesResourceName)
-                    ?.Images?.Select(x => drawing.CreateSurface(x));
+                    ?.Images?.Select(x => drawing.CreateSpriteTexture(x));
 
             return new LayoutRenderer(layout, drawing, images);
         }
