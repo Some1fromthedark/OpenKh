@@ -11,7 +11,6 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using YamlDotNet.Serialization;
-using static OpenKh.Kh2.SystemData.Shop;
 
 namespace OpenKh.Patcher
 {
@@ -1018,7 +1017,10 @@ namespace OpenKh.Patcher
                             }
                         }
                         inventoriesBaseOffset = (ushort)(Kh2.SystemData.Shop.HeaderSize + moddedShopEntryHelpers.Count * Kh2.SystemData.Shop.ShopEntrySize);
-                        shop.ShopEntries = moddedShopEntryHelpers.Select(x => x.ToShopEntry(inventoriesBaseOffset)).ToList();
+                        shop.ShopEntries = moddedShopEntryHelpers.Select(x => 
+                            shop.ShopEntries.FindIndex(0, y => x.ShopID == y.ShopID) != -1 ? 
+                                x.ToShopEntry(shop.ShopEntries.Find(y => x.ShopID == y.ShopID), inventoriesBaseOffset) : x.ToShopEntry(inventoriesBaseOffset)
+                        ).ToList();
                         List<Kh2.SystemData.Shop.InventoryEntryHelper> moddedInventoryEntryHelpers = shop.InventoryEntries.Select((x, index) => 
                             x.ToInventoryEntryHelper(index, productsBaseOffset)
                         ).ToList();

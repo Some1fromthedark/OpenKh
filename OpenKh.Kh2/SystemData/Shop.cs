@@ -105,51 +105,52 @@ namespace OpenKh.Kh2.SystemData
 
         public class ShopEntryHelper
         {
-            public ushort CommandArgument { get; set; }
-            public ushort UnlockMenuFlag { get; set; }
-            public ushort NameID { get; set; }
-            public ushort ShopKeeperEntityID { get; set; }
-            public short PosX { get; set; }
-            public short PosY { get; set; }
-            public short PosZ { get; set; }
-            public byte ExtraInventoryBitMask { get; set; }
-            public byte SoundID { get; set; }
-            public ushort InventoryCount { get; set; }
+            public ushort? CommandArgument { get; set; }
+            public ushort? UnlockMenuFlag { get; set; }
+            public ushort? NameID { get; set; }
+            public ushort? ShopKeeperEntityID { get; set; }
+            public short? PosX { get; set; }
+            public short? PosY { get; set; }
+            public short? PosZ { get; set; }
+            public byte? ExtraInventoryBitMask { get; set; }
+            public byte? SoundID { get; set; }
+            public ushort? InventoryCount { get; set; }
             public byte ShopID { get; set; }
-            public byte Unk19 { get; set; }
-            public uint InventoryStartIndex { get; set; }
+            public byte? Unk19 { get; set; }
+            public uint? InventoryStartIndex { get; set; }
 
             public ShopEntryHelper() { }
-            public ShopEntryHelper(ushort commandArgument, ushort unlockMenuFlag, ushort nameID, ushort shopKeeperEntityID, short posX, short posY, short posZ, byte extraInventoryBitMask, byte soundID, ushort inventoryCount, byte shopID, byte unk19, uint inventoryStartIndex)
-            {
-                CommandArgument = commandArgument;
-                UnlockMenuFlag = unlockMenuFlag;
-                NameID = nameID;
-                ShopKeeperEntityID = shopKeeperEntityID;
-                PosX = posX;
-                PosY = posY;
-                PosZ = posZ;
-                ExtraInventoryBitMask = extraInventoryBitMask;
-                SoundID = soundID;
-                InventoryCount = inventoryCount;
-                ShopID = shopID;
-                Unk19 = unk19;
-                InventoryStartIndex = inventoryStartIndex;
-            }
             public ShopEntry ToShopEntry(ushort InventoriesBaseOffset) => new ShopEntry() {
-                CommandArgument = CommandArgument,
-                UnlockMenuFlag = UnlockMenuFlag,
-                NameID = NameID,
-                ShopKeeperEntityID = ShopKeeperEntityID,
-                PosX = PosX,
-                PosY = PosY,
-                PosZ = PosZ,
-                ExtraInventoryBitMask = ExtraInventoryBitMask,
-                SoundID = SoundID,
-                InventoryCount = InventoryCount,
+                CommandArgument = CommandArgument.Value,
+                UnlockMenuFlag = UnlockMenuFlag.Value,
+                NameID = NameID.Value,
+                ShopKeeperEntityID = ShopKeeperEntityID.Value,
+                PosX = PosX.Value,
+                PosY = PosY.Value,
+                PosZ = PosZ.Value,
+                ExtraInventoryBitMask = ExtraInventoryBitMask.Value,
+                SoundID = SoundID.Value,
+                InventoryCount = InventoryCount.Value,
                 ShopID = ShopID,
-                Unk19 = Unk19,
-                InventoryOffset = (ushort)(InventoriesBaseOffset + InventoryStartIndex * InventoryEntrySize),
+                Unk19 = Unk19.Value,
+                InventoryOffset = (ushort)(InventoriesBaseOffset + InventoryStartIndex.Value * InventoryEntrySize),
+                Reserved = 0
+            };
+            public ShopEntry ToShopEntry(ShopEntry template, ushort InventoriesBaseOffset) => new ShopEntry()
+            {
+                CommandArgument = CommandArgument ?? template.CommandArgument,
+                UnlockMenuFlag = UnlockMenuFlag ?? template.UnlockMenuFlag,
+                NameID = NameID ?? template.UnlockMenuFlag,
+                ShopKeeperEntityID = ShopKeeperEntityID ?? template.ShopKeeperEntityID,
+                PosX = PosX ?? template.PosX,
+                PosY = PosY ?? template.PosY,
+                PosZ = PosZ ?? template.PosZ,
+                ExtraInventoryBitMask = ExtraInventoryBitMask ?? template.ExtraInventoryBitMask,
+                SoundID = SoundID ?? template.SoundID,
+                InventoryCount = InventoryCount ?? template.InventoryCount,
+                ShopID = ShopID,
+                Unk19 = Unk19 ?? template.Unk19,
+                InventoryOffset = InventoryStartIndex.HasValue ? (ushort)(InventoriesBaseOffset + InventoryStartIndex.Value * InventoryEntrySize) : template.InventoryOffset,
                 Reserved = 0
             };
         }
